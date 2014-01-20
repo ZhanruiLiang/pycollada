@@ -16,7 +16,7 @@ def getGLError():
     e = glGetError()
     if e != 0:
         errstr = gluErrorString(e)
-        print 'GL ERROR:', errstr
+        print('GL ERROR:', errstr)
         return errstr
     else:
         return None

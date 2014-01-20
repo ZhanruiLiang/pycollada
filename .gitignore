@@ -9,3 +9,5 @@ dist
 pycollada.egg-info
 __testing
 distribute*.tar.gz
+*.py.bak
+__pycache__
