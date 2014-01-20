@@ -121,6 +121,7 @@ class TestMaterial(unittest.TestCase):
             
         if pil is not None:
             pil_image = cimage.pilimage
+            self.assertTrue(pil_image is not None)
             self.assertTupleEqual(pil_image.size, (512,512))
             self.assertEqual(pil_image.format, "TGA")
 

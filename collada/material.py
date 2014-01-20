@@ -25,11 +25,12 @@ import numpy
 from collada.common import DaeObject, E, tag
 from collada.common import DaeIncompleteError, DaeBrokenRefError, \
         DaeMalformedError, DaeUnsupportedError
-from collada.util import falmostEqual, StringIO
+from collada.util import falmostEqual, StringIO, BytesIO
 from collada.xmlutil import etree as ElementTree
 
 try:
-    from PIL import Image as pil
+    # Using `from PIL import Image` fails to load tga images.
+    import Image as pil
 except:
     pil = None
 
@@ -81,6 +82,7 @@ class CImage(DaeObject):
 
     def getData(self):
         if self._data is None:
+            print('data path:', self.path)
             try: self._data = self.collada.getFileData( self.path )
             except DaeBrokenRefError as ex:
                 self._data = ''
@@ -90,20 +92,20 @@ class CImage(DaeObject):
     def getImage(self):
         if pil is None or self._pilimage == 'failed':
             return None
-        if self._pilimage:
-            return self._pilimage
-        else:
+        if self._pilimage is None:
             data = self.getData()
             if not data:
                 self._pilimage = 'failed'
                 return None
-            try:
-                self._pilimage = pil.open( StringIO(data) )
-                self._pilimage.load()
-            except IOError as ex:
-                self._pilimage = 'failed'
-                return None
-            return self._pilimage
+            imageFile = StringIO(data) if isinstance(data, str) else BytesIO(data)
+            # imageFile = BytesIO(data.encode() if isinstance(data, str) else data)
+            print('imagefile type:', type(imageFile))
+            print('data size:', len(data))
+            with open('/tmp/xx', 'wb') as outf:
+                outf.write(data)
+            self._pilimage = pil.open(imageFile)
+            self._pilimage.load()
+        return self._pilimage
 
     def getUintArray(self):
         if self._uintarray == 'failed': return None
