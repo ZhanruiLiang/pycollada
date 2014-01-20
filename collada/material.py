@@ -82,7 +82,6 @@ class CImage(DaeObject):
 
     def getData(self):
         if self._data is None:
-            print('data path:', self.path)
             try: self._data = self.collada.getFileData( self.path )
             except DaeBrokenRefError as ex:
                 self._data = ''
@@ -99,8 +98,6 @@ class CImage(DaeObject):
                 return None
             imageFile = StringIO(data) if isinstance(data, str) else BytesIO(data)
             # imageFile = BytesIO(data.encode() if isinstance(data, str) else data)
-            print('imagefile type:', type(imageFile))
-            print('data size:', len(data))
             with open('/tmp/xx', 'wb') as outf:
                 outf.write(data)
             self._pilimage = pil.open(imageFile)
